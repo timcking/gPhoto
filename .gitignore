@@ -1,4 +1,5 @@
 *.bak
 *.dll
+*.pyc
 build
 dist
