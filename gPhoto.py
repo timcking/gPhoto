@@ -1,6 +1,6 @@
 import wx
 from wx import xrc
-import gData
+from gData import gData
 
 class MyApp(wx.App):
     mPass = ""
@@ -34,10 +34,10 @@ class MyApp(wx.App):
             print mPass
         
         # Instantiate how???
-        # self.photo = gData()
+        photo = gData()
         
         # Load Album Data
-        # self.photo.load_albums(self)        
+        # photo.load_albums()        
                 
         self.frame.Show()
 
