@@ -19,13 +19,16 @@ class MyApp(wx.App):
         # self.lblIP = xrc.XRCCTRL(self.frame, 'lblIP')
         # self.btnOK = xrc.XRCCTRL(self.frame, 'wxID_OK')
         # self.btnOK.SetDefault()
+        self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
 
         # Bind Events
-        self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_EXIT'))
+        self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_CLOSE'))
+        self.frame.Bind(wx.EVT_CLOSE, self.OnExitApp)
         
         mPass = self.getPassword()
         if not mPass:
-            MyApp.Exit(self)
+            # ToDo
+            pass
         else:
             print mPass
                 
@@ -40,17 +43,16 @@ class MyApp(wx.App):
         if dialog.ShowModal() == wx.ID_OK:
             pw = dialog.GetValue()
             return pw
-        else:
-            return none
+        #TODO: Button Cancel
         
         dialog.Destroy()        
             
     def OnClose(self, evt):
-        self.Close()    
+        self.Exit()
         
-    def OnExit(self, evt):
-        self.Exit()    
-
+    def OnExitApp(self, event):
+        self.Exit()
+         
 if __name__ == '__main__':
     app = MyApp(False)
     app.MainLoop()
