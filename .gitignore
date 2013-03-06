@@ -1,0 +1,4 @@
+*.bak
+*.dll
+build
+dist
