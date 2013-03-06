@@ -2,6 +2,7 @@ import wx
 from wx import xrc
 
 class MyApp(wx.App):
+    mPass = ""
 
     def OnInit(self):
         self.res = xrc.XmlResource('gui.xrc')
@@ -20,12 +21,34 @@ class MyApp(wx.App):
         # self.btnOK.SetDefault()
 
         # Bind Events
-        # self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_OK'))
+        self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_EXIT'))
         
-        # Do something before or after this
+        mPass = self.getPassword()
+        if not mPass:
+            MyApp.Exit(self)
+        else:
+            print mPass
+                
         self.frame.Show()
 
+    def getPassword(self):
+        # TODO: Allow for other users
+        dialog = wx.TextEntryDialog(None,
+        "Password for timcking",
+        "Google Login", "", style=wx.OK|wx.CANCEL)
+        
+        if dialog.ShowModal() == wx.ID_OK:
+            pw = dialog.GetValue()
+            return pw
+        else:
+            return none
+        
+        dialog.Destroy()        
+            
     def OnClose(self, evt):
+        self.Close()    
+        
+    def OnExit(self, evt):
         self.Exit()    
 
 if __name__ == '__main__':
