@@ -37,8 +37,8 @@ class MyApp(wx.App):
         photo = gData()
         
         # Load Album Data
-        # photo.load_albums()        
-                
+        photo.load_albums()        
+        
         self.frame.Show()
 
     def getPassword(self):
