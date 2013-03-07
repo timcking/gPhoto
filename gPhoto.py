@@ -3,6 +3,11 @@ from wx import xrc
 from gData import gData
 
 class MyApp(wx.App):
+    # Format for dictionary: {index: ('album_id')}
+    dictAlbum = {}
+    # Format for photo dict: {index: (photo_id, url, caption, addl_info)}
+    dictPhoto = {}    
+    
     mPass = ""
 
     def OnInit(self):
@@ -20,6 +25,7 @@ class MyApp(wx.App):
         # self.lblIP = xrc.XRCCTRL(self.frame, 'lblIP')
         # self.btnOK = xrc.XRCCTRL(self.frame, 'wxID_OK')
         # self.btnOK.SetDefault()
+        self.listAlbums = xrc.XRCCTRL(self.frame, 'listAlbums')
         self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
 
         # Bind Events
@@ -33,11 +39,17 @@ class MyApp(wx.App):
         else:
             print mPass
         
-        # Instantiate how???
-        photo = gData()
-        
+        # Instantiate
+        photo = gData(mPass)
         # Load Album Data
-        photo.load_albums()        
+        albums = photo.load_albums()        
+        
+        index_count = 0
+        for album in albums.entry:
+            self.listAlbums.Append('%s' % album.title.text)
+            self.dictAlbum[index_count] = album.gphoto_id.text
+            index_count += 1        
+            # print 'title: %s, number of photos: %s, id: %s' % (album.title.text, album.numphotos.text, album.gphoto_id.text)
         
         self.frame.Show()
 
