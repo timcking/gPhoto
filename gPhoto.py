@@ -26,11 +26,13 @@ class MyApp(wx.App):
         # self.btnOK = xrc.XRCCTRL(self.frame, 'wxID_OK')
         # self.btnOK.SetDefault()
         self.listAlbums = xrc.XRCCTRL(self.frame, 'listAlbums')
+        self.listPhotos = xrc.XRCCTRL(self.frame, 'listPhotos')
         self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
 
         # Bind Events
         self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_CLOSE'))
         self.frame.Bind(wx.EVT_CLOSE, self.OnExitApp)
+        self.listAlbums.Bind(wx.EVT_LISTBOX, self.OnListAlbumsListbox, id=xrc.XRCID('listAlbums'))
         
         mPass = self.getPassword()
         if not mPass:
@@ -65,6 +67,19 @@ class MyApp(wx.App):
         #TODO: Button Cancel
         
         dialog.Destroy()        
+        
+    def OnListAlbumsListbox(self, event):
+        # self.btnInfo.Enable(False)
+        self.listPhotos.Clear()
+        selected = self.listAlbums.GetSelection()
+        
+        # Get saved Album ID
+        album_id = self.dictAlbum[selected]        
+        # Load Photo Data    
+        # albums = photo.load_albums()        
+        # tmp = photo.load_photos(album_id)
+        
+        print "Album list clicked: " + album_id
             
     def OnClose(self, evt):
         self.Exit()
