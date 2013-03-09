@@ -42,9 +42,9 @@ class MyApp(wx.App):
             print mPass
         
         # Instantiate
-        photo = gData(mPass)
+        self.photoData = gData(mPass)
         # Load Album Data
-        albums = photo.load_albums()        
+        albums = self.photoData.load_albums()
         
         index_count = 0
         for album in albums.entry:
@@ -75,11 +75,36 @@ class MyApp(wx.App):
         
         # Get saved Album ID
         album_id = self.dictAlbum[selected]        
-        # Load Photo Data    
-        # albums = photo.load_albums()        
-        # tmp = photo.load_photos(album_id)
-        
         print "Album list clicked: " + album_id
+        
+        # Load Photo Data    
+        photos = self.photoData.load_photos(album_id)
+        
+        i = 0
+        for photo in photos.entry:
+            # These may be null
+            try:
+                camera = ('Camera: %s %s\n' % (photo.exif.make.text, photo.exif.model.text))
+            except Exception:
+                camera = ''
+            
+            try:
+                fstop = ('FStop: %s\n' % (photo.exif.fstop.text))
+            except Exception:
+                fstop = ''
+                
+            try:
+                # Need to remove last 3 digits of timestamp for valid epoch time
+                epoch = int(photo.timestamp.text[0:-3])
+                timestamp = ('Date: %s\n' % (time.ctime(epoch)))
+            except Exception:
+                timestamp = ''
+                
+            addl_info = timestamp + camera + fstop
+            caption = photo.summary.text
+            self.listPhotos.Append('%s' % caption)
+            self.dictPhoto[i] = photo.gphoto_id.text, photo.content.src, caption, addl_info
+            i += 1        
             
     def OnClose(self, evt):
         self.Exit()
