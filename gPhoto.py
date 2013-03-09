@@ -1,6 +1,8 @@
 import wx
 from wx import xrc
+import time
 from gData import gData
+from wx.lib.dialogs import ScrolledMessageDialog
 
 class MyApp(wx.App):
     # Format for dictionary: {index: ('album_id')}
@@ -22,17 +24,22 @@ class MyApp(wx.App):
         # self.frame.SetIcon(self.favicon)        
 
         # Bind Controls
-        # self.lblIP = xrc.XRCCTRL(self.frame, 'lblIP')
-        # self.btnOK = xrc.XRCCTRL(self.frame, 'wxID_OK')
         # self.btnOK.SetDefault()
         self.listAlbums = xrc.XRCCTRL(self.frame, 'listAlbums')
         self.listPhotos = xrc.XRCCTRL(self.frame, 'listPhotos')
+        self.btnInfo = xrc.XRCCTRL(self.frame, 'btnInfo')
+        self.btnView = xrc.XRCCTRL(self.frame, 'btnView')
         self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
 
         # Bind Events
         self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_CLOSE'))
         self.frame.Bind(wx.EVT_CLOSE, self.OnExitApp)
         self.listAlbums.Bind(wx.EVT_LISTBOX, self.OnListAlbumsListbox, id=xrc.XRCID('listAlbums'))
+        self.listPhotos.Bind(wx.EVT_LISTBOX, self.OnListPhotosListbox, id=xrc.XRCID('listPhotos'))
+        self.btnInfo.Bind(wx.EVT_BUTTON, self.OnBtnInfoButton, id=xrc.XRCID('btnInfo'))
+        
+        self.btnInfo.Enable(False)
+        self.btnView.Enable(False)
         
         mPass = self.getPassword()
         if not mPass:
@@ -68,8 +75,23 @@ class MyApp(wx.App):
         
         dialog.Destroy()        
         
+    def OnBtnInfoButton(self, event):
+        # Display additional info
+        selected = self.listPhotos.GetSelection()
+        info = photo_id, photo_url, photo_caption, addl_info = self.dictPhoto[selected]    
+        dialog = ScrolledMessageDialog (self, info, 'Additional Information', pos=wx.DefaultPosition, size=(550, 400))
+        result = dialog.ShowModal()   
+        
+        if result == wx.ID_OK: 
+            dialog.Destroy()    
+            
+    def OnListPhotosListbox(self, event):
+        self.btnInfo.Enable(True)
+        self.btnView.Enable(True)
+        
     def OnListAlbumsListbox(self, event):
-        # self.btnInfo.Enable(False)
+        self.btnInfo.Enable(False)
+        self.btnView.Enable(False)
         self.listPhotos.Clear()
         selected = self.listAlbums.GetSelection()
         
