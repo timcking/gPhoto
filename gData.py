@@ -1,6 +1,5 @@
 import gdata.photos.service
 import base64
-import webbrowser
 import sys
 
 class gData():
