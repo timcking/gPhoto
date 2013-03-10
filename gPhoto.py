@@ -46,15 +46,13 @@ class MyApp(wx.App):
         self.btnInfo.Enable(False)
         self.btnView.Enable(False)
         
-        mPass = self.getUserPass()
+        mUser, mPass = self.getUserPass()
         if not mPass:
             # ToDo
             pass
-        else:
-            print mPass
         
         # Instantiate
-        self.photoData = gData(mPass)
+        self.photoData = gData(mUser, mPass)
         # Load Album Data
         albums = self.photoData.load_albums()
         
@@ -68,16 +66,15 @@ class MyApp(wx.App):
         self.frame.Show()
 
     def getUserPass(self):
+        #TODO: Get default usename from settings.ini
         user = wx.TextEntryDialog(None, "Username", "Google Login", "timcking@gmail.com")
         if user.ShowModal() == wx.ID_OK:
             userName = user.GetValue()
-            print userName
-            # TODO add return userName
-            
+        
             passw = wx.TextEntryDialog(None, "Password", "Google Login", "")
             if passw.ShowModal() == wx.ID_OK:
-                mPass = passw.GetValue()
-                return mPass
+                passWord = passw.GetValue()
+                return userName, passWord
                 
     def showPhoto(self):
         selected = self.listPhotos.GetSelection()

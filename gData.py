@@ -5,8 +5,8 @@ import sys
 class gData():
     gd_client = gdata.photos.service.PhotosService()
     
-    def __init__(self, passwd):
-        self.gd_client.email = 'timcking@gmail.com'
+    def __init__(self, user, passwd):
+        self.gd_client.email = user
         self.gd_client.password = passwd
         self.gd_client.source = 'gPhoto'
         try:
