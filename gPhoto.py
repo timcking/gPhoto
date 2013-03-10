@@ -32,7 +32,6 @@ class MyApp(wx.App):
         self.btnView = xrc.XRCCTRL(self.frame, 'btnView')
         self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
         self.statusMain = xrc.XRCCTRL(self.frame, 'statusMain')
-        self.statusMain.SetStatusText("Ready")
 
         # Bind Events
         self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_CLOSE'))
@@ -51,19 +50,29 @@ class MyApp(wx.App):
             # ToDo
             pass
         
+        
         # Instantiate
         self.photoData = gData(mUser, mPass)
-        # Load Album Data
-        albums = self.photoData.load_albums()
-        
-        index_count = 0
-        for album in albums.entry:
-            self.listAlbums.Append('%s' % album.title.text)
-            self.dictAlbum[index_count] = album.gphoto_id.text
-            index_count += 1        
-            # print 'title: %s, number of photos: %s, id: %s' % (album.title.text, album.numphotos.text, album.gphoto_id.text)
+        # Login
+        msg = self.photoData.login()
         
         self.frame.Show()
+        
+        if msg:
+            # Login failed
+            self.statusMain.SetStatusText(msg)
+        else:
+            self.statusMain.SetStatusText("Getting albums ...")
+            # Load Album Data
+            albums = self.photoData.load_albums()
+            index_count = 0
+            for album in albums.entry:
+                self.listAlbums.Append('%s' % album.title.text)
+                self.dictAlbum[index_count] = album.gphoto_id.text
+                index_count += 1        
+                # print 'title: %s, number of photos: %s, id: %s' % (album.title.text, album.numphotos.text, album.gphoto_id.text)
+            
+            self.statusMain.SetStatusText("Ready")
 
     def getUserPass(self):
         #TODO: Get default usename from settings.ini
@@ -107,6 +116,7 @@ class MyApp(wx.App):
         self.btnInfo.Enable(False)
         self.btnView.Enable(False)
         self.listPhotos.Clear()
+        self.statusMain.SetStatusText("Getting photos ...")
         selected = self.listAlbums.GetSelection()
         
         # Get saved Album ID
@@ -142,6 +152,8 @@ class MyApp(wx.App):
             self.dictPhoto[i] = photo.gphoto_id.text, photo.content.src, caption, addl_info
             i += 1        
             
+        self.statusMain.SetStatusText("Ready")
+        
     def OnClose(self, evt):
         self.Exit()
         

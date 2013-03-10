@@ -9,11 +9,13 @@ class gData():
         self.gd_client.email = user
         self.gd_client.password = passwd
         self.gd_client.source = 'gPhoto'
+    
+    def login(self):
         try:
             self.gd_client.ProgrammaticLogin()
+            return None
         except Exception, err:
-            # TODO: Show in UI
-            sys.stderr.write('ERROR: %s\n' % str(err))            
+            return str(err)
             
     def load_albums(self):
         return self.gd_client.GetUserFeed(user='default')
