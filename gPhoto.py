@@ -31,6 +31,8 @@ class MyApp(wx.App):
         self.btnInfo = xrc.XRCCTRL(self.frame, 'btnInfo')
         self.btnView = xrc.XRCCTRL(self.frame, 'btnView')
         self.btnClose = xrc.XRCCTRL(self.frame, 'wxID_CLOSE')
+        self.statusMain = xrc.XRCCTRL(self.frame, 'statusMain')
+        self.statusMain.SetStatusText("Ready")
 
         # Bind Events
         self.frame.Bind(wx.EVT_BUTTON, self.OnClose, id=xrc.XRCID('wxID_CLOSE'))
@@ -44,7 +46,7 @@ class MyApp(wx.App):
         self.btnInfo.Enable(False)
         self.btnView.Enable(False)
         
-        mPass = self.getPassword()
+        mPass = self.getUserPass()
         if not mPass:
             # ToDo
             pass
@@ -65,19 +67,18 @@ class MyApp(wx.App):
         
         self.frame.Show()
 
-    def getPassword(self):
-        # TODO: Allow for other users
-        dialog = wx.TextEntryDialog(None,
-        "Password for timcking",
-        "Google Login", "", style=wx.OK|wx.CANCEL)
-        
-        if dialog.ShowModal() == wx.ID_OK:
-            pw = dialog.GetValue()
-            return pw
-        #TODO: Button Cancel
-        
-        dialog.Destroy()        
-        
+    def getUserPass(self):
+        user = wx.TextEntryDialog(None, "Username", "Google Login", "timcking@gmail.com")
+        if user.ShowModal() == wx.ID_OK:
+            userName = user.GetValue()
+            print userName
+            # TODO add return userName
+            
+            passw = wx.TextEntryDialog(None, "Password", "Google Login", "")
+            if passw.ShowModal() == wx.ID_OK:
+                mPass = passw.GetValue()
+                return mPass
+                
     def showPhoto(self):
         selected = self.listPhotos.GetSelection()
         photo_id, photo_url, photo_caption, addl_info = self.dictPhoto[selected]
