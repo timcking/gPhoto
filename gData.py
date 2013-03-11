@@ -1,6 +1,4 @@
 import gdata.photos.service
-import base64
-import sys
 
 class gData():
     gd_client = gdata.photos.service.PhotosService()

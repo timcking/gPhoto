@@ -133,7 +133,7 @@ class MyApp(wx.App):
         
         # Get saved Album ID
         album_id = self.dictAlbum[selected]        
-        print "Album list clicked: " + album_id
+        # print "Album list clicked: " + album_id
         
         # Load Photo Data    
         photos = self.photoData.load_photos(album_id)
