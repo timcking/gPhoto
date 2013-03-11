@@ -76,7 +76,7 @@ class MyApp(wx.App):
             userName = user.GetValue()
             # TODO: What if they press cancel?
             
-            passw = wx.TextEntryDialog(None, "Password", "Google Login", "")
+            passw = wx.PasswordEntryDialog(None, "Password", "Google Login", "")
             if passw.ShowModal() == wx.ID_OK:
                 passWord = passw.GetValue()
                 return userName, passWord
@@ -120,7 +120,9 @@ class MyApp(wx.App):
             
     def OnListPhotosListbox(self, event):
         self.btnInfo.Enable(True)
-        self.btnView.Enable(True)
+        self.btnView.Enable(True)        selected = self.listPhotos.GetSelection()
+        photo_id, photo_url, photo_caption, addl_info = self.dictPhoto[selected]    
+        self.statusMain.SetStatusText(addl_info)
         
     def OnListAlbumsListbox(self, event):
         self.btnInfo.Enable(False)
@@ -140,23 +142,23 @@ class MyApp(wx.App):
         for photo in photos.entry:
             # These may be null
             try:
-                camera = ('Camera: %s %s\n' % (photo.exif.make.text, photo.exif.model.text))
+                camera = (' - %s %s' % (photo.exif.make.text, photo.exif.model.text))
             except Exception:
                 camera = ''
             
-            try:
-                fstop = ('FStop: %s\n' % (photo.exif.fstop.text))
-            except Exception:
-                fstop = ''
+            # try:
+            #     fstop = ('FStop: %s\n' % (photo.exif.fstop.text))
+            # except Exception:
+            #     fstop = ''
                 
             try:
                 # Need to remove last 3 digits of timestamp for valid epoch time
                 epoch = int(photo.timestamp.text[0:-3])
-                timestamp = ('Date: %s\n' % (time.ctime(epoch)))
+                timestamp = ('%s' % (time.ctime(epoch)))
             except Exception:
                 timestamp = ''
                 
-            addl_info = timestamp + camera + fstop
+            addl_info = timestamp + camera # + fstop
             caption = photo.summary.text
             self.listPhotos.Append('%s' % caption)
             self.dictPhoto[i] = photo.gphoto_id.text, photo.content.src, caption, addl_info
