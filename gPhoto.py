@@ -4,13 +4,13 @@ import time
 from gData import gData
 from wx.lib.dialogs import ScrolledMessageDialog
 import webbrowser
+import ConfigParser
 
 class MyApp(wx.App):
     # Format for dictionary: {index: ('album_id')}
     dictAlbum = {}
     # Format for photo dict: {index: (photo_id, url, caption, addl_info)}
     dictPhoto = {}    
-    
     mPass = ""
 
     def OnInit(self):
@@ -25,7 +25,6 @@ class MyApp(wx.App):
         # self.frame.SetIcon(self.favicon)        
 
         # Bind Controls
-        # self.btnOK.SetDefault()
         self.listAlbums = xrc.XRCCTRL(self.frame, 'listAlbums')
         self.listPhotos = xrc.XRCCTRL(self.frame, 'listPhotos')
         self.btnInfo = xrc.XRCCTRL(self.frame, 'btnInfo')
@@ -46,10 +45,6 @@ class MyApp(wx.App):
         self.btnView.Enable(False)
         
         mUser, mPass = self.getUserPass()
-        if not mPass:
-            # ToDo
-            pass
-        
         
         # Instantiate
         self.photoData = gData(mUser, mPass)
@@ -75,16 +70,31 @@ class MyApp(wx.App):
             self.statusMain.SetStatusText("Ready")
 
     def getUserPass(self):
-        #TODO: Get default usename from settings.ini
-        user = wx.TextEntryDialog(None, "Username", "Google Login", "timcking@gmail.com")
+        defaultUser = self.readSettings()
+        user = wx.TextEntryDialog(None, "Username", "Google Login", defaultUser)
         if user.ShowModal() == wx.ID_OK:
             userName = user.GetValue()
-        
+            # TODO: What if they press cancel?
+            
             passw = wx.TextEntryDialog(None, "Password", "Google Login", "")
             if passw.ShowModal() == wx.ID_OK:
                 passWord = passw.GetValue()
                 return userName, passWord
-                
+                # TODO: What if they press cancel?
+        
+    def readSettings(self):
+        iniFile = 'Settings.ini'
+        try:
+            # Get default usename if Settings.ini exists
+            # This doesn't create a new ini file if one doesn't exist, must do manual
+            with open(iniFile) as f:
+                Config = ConfigParser.ConfigParser()
+                Config.read(iniFile)
+                return Config.get('Settings', 'user')
+                f.close()
+        except IOError as e:
+            return ''
+            
     def showPhoto(self):
         selected = self.listPhotos.GetSelection()
         photo_id, photo_url, photo_caption, addl_info = self.dictPhoto[selected]
