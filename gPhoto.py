@@ -74,11 +74,13 @@ class MyApp(wx.App):
         user = wx.TextEntryDialog(None, "Username", "Google Login", defaultUser)
         if user.ShowModal() == wx.ID_OK:
             userName = user.GetValue()
+            user.Destroy()
             # TODO: What if they press cancel?
             
             passw = wx.PasswordEntryDialog(None, "Password", "Google Login", "")
             if passw.ShowModal() == wx.ID_OK:
                 passWord = passw.GetValue()
+                passw.Destroy()
                 return userName, passWord
                 # TODO: What if they press cancel?
         
@@ -91,7 +93,6 @@ class MyApp(wx.App):
                 Config = ConfigParser.ConfigParser()
                 Config.read(iniFile)
                 return Config.get('Settings', 'user')
-                f.close()
         except IOError as e:
             return ''
             
